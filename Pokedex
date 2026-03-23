@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mack Pokedex</title>
+        
+        <style>
+            h1 {
+                font-family: Arial;
+                text-align: center;
+            }
+            
+            .bordered {
+		        border: 2px solid gray;
+	        }
+	        
+	        body {
+	            background-color: #b0c4de;
+	        }
+
+            .nomeP {
+                font-family: Verdana;
+            }
+        </style>
+    </head>
+    <body>
+       <h1>Busca de Pokemon</h1>
+       
+       <input type="text" id="pokemon" size="50" placeholder="Digite o nome">
+       <button class="bordered" onclick="buscar()">Buscar</button>
+       
+       <div id="resultado"></div>
+       
+       <script>
+        async function buscar() {
+            let nome = document.getElementById("pokemon").value.toLowerCase()
+            let resultadoDiv = document.getElementById("resultado")
+    
+            try {
+                let resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nome}`)
+                
+                if (!resposta.ok) {
+                    throw new Error("Não encontrado")
+                }
+
+                let dados = await resposta.json()
+
+                let nomePokemon = dados.name
+
+                let tipos = ""
+                for (let i = 0; i < dados.types.length; i++) {
+                    tipos += dados.types[i].type.name + " "
+                }
+
+                let imagem = dados.sprites.front_default
+
+                resultadoDiv.innerHTML = 
+                `<h2 class="nomeP">${nomePokemon}</h2>
+                <p>Tipos: ${tipos}</p>
+                <img src="${imagem}" alt="${nomePokemon}">
+                `;
+
+            } catch (erro) {
+                resultadoDiv.innerHTML = "Pokemon não encontrado"
+            }
+        }
+       </script>
+    </body>
+</html>
